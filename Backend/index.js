@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user.route.js';
+import travelStoryRoutes from './routes/TravelStory.route.js';
 dotenv.config();
 mongoose.connect(process.env.MONGODB_URL).then(()=>{
     console.log("Connected to DB");
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);  
 app.use("/api/user", userRoutes);
+app.use("/api/travelStory", travelStoryRoutes);
 
 app.listen(3000,()=>{
     console.log("server is running on port 3000");
