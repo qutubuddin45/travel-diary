@@ -32,3 +32,17 @@ export const addTravelStory = async (req,res,next) => {
     catch(err){
   next(err); } 
 }
+
+export const  getAllTravelStory = async(req,res,next) => {
+    const userId = req.user.id;
+    try{
+        const travelStories  = await TravelStory.find({userId}).sort({isFavorite : -1})
+
+        res.status(200).json({
+            stories : travelStories 
+        })
+
+    }catch(err){
+      next(err);
+    }
+}
