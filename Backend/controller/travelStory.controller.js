@@ -1,4 +1,4 @@
-import { errorHandler} from '../utils/error.js';
+ import { errorHandler} from '../utils/error.js';
 import TravelStory from '../models/travelStory.model.js';
 export const addTravelStory = async (req,res,next) => {
     const{title, story, visitedLocation, isFavorite, imageURL, visitedDate} = req.body;
@@ -45,4 +45,16 @@ export const  getAllTravelStory = async(req,res,next) => {
     }catch(err){
       next(err);
     }
+}
+
+export const imageupload = async(req,res,next) => {
+    try{
+    if(!req.file){
+        return  next(errorHandler(400, "Image is required"));
+    }
+    const imageURL = `http://localhost:3000/uploads/${req.file.filename}`;
+    res.status(201).json({imageURL});
+} catch(err){
+    next(err);
+}
 }
