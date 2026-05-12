@@ -6,9 +6,11 @@ import upload from "../multer.js";
 const router = express.Router(); 
 
 router.post("/image-upload", upload.single("image"), imageupload);
+router.delete("/delete-image", deleteImage );
 
 router.post("/add", VerifyToken, addTravelStory);
 
 router.get("/get-all", VerifyToken, getAllTravelStory);
+
 
 export default router;        
