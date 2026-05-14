@@ -30,5 +30,6 @@ const fileFilter = (req, file, cb) => {
 
 //initialiaze multer instance
 
-const upload = multer({diskStorage, fileFilter});
+// ✅ Correct
+const upload = multer({ storage: diskStorage, fileFilter });
 export default upload;

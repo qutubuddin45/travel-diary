@@ -3,12 +3,13 @@
  import fs from 'fs';
  import path from 'path';
 import TravelStory from '../models/travelStory.model.js';
+import { title } from 'process';
 export const addTravelStory = async (req,res,next) => {
     const{title, story, visitedLocation, isFavorite, imageURL, visitedDate} = req.body;
 
     const userId = req.user.id;
     //validate require fields
-    if(!title || !story || !imageURL || !visitedDate){
+    if(!title || !story || !imageURL || !visitedDate || !visitedLocation){
         return next(errorHandler(400, "All fields are required"));
     }
         // convert visited date from milliseocnd to date object
@@ -66,17 +67,18 @@ const _dirname = path.dirname(_filename);
 const rootDir = path.join(_dirname,"..");
 
 export const deleteImage = async(req,res,next) => {
-    const {imageURL} = req.query;
+    const {ImageURL} = req.query;
 
-    if(!imageURL){
+    if(!ImageURL){
         return next(errorHandler(400, "Image URL is required"));
     }
   try {
         
 
-const filename = path.basename(imageURL);
+const filename = path.basename(ImageURL);
 // delete the file path 
 const filePath  = path.join(rootDir, "uploads", filename);
+console.log(filePath);
 
 //check if the file exist
 if(fs.existsSync(filePath)){
@@ -90,3 +92,40 @@ if(fs.existsSync(filePath)){
   }
     
 }
+
+export const editTravelStory = async(req,res,next) => {
+    const {id} = req.params;
+    const { title, story, visitedLocation, isFavorite , imageURL , visitedDate} = req.body;
+
+    if(!title || !story || !imageURL || !visitedDate || !visitedLocation){
+    return next(errorHandler(400, "All fields are required"));
+
+        // convert visited date from milliseocnd to date object
+        const parsedvisitedDate = new Date(visitedDate);
+
+        try {
+            const travelstory = TravelStory.findOne({_id :id, userId :userId});
+
+            if(!travelstory){
+                return next(errorHandler(404, "Travel story not found"));
+            }
+
+            const placeHolderImageURL = `http://localhost:3000/assests/placeholderimage.jpg`
+            travelstory.title = title
+            travelstory.story = story
+            travelstory.visitedLocation = visitedLocation
+            travelstory.isFavorite = isFavorite
+            travelstory.visitedDate = visitedDate
+            travelstory.imageURL = imageURL || placeHolderImageURL
+
+            await travelstory.save();
+
+            res.status(200).json({
+                story : travelstory,
+                message : "Travel story updated succesfully"
+            })
+        } catch (error) {  
+            next(error);
+        }
+}
+} 
