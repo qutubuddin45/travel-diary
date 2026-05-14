@@ -9,7 +9,7 @@ export const addTravelStory = async (req,res,next) => {
 
     const userId = req.user.id;
     //validate require fields
-    if(!title || !story || !imageURL || !visitedDate || !visitedLocation){
+    if(!title || !story || !imageURL  || !visitedLocation){
         return next(errorHandler(400, "All fields are required"));
     }
         // convert visited date from milliseocnd to date object
@@ -99,18 +99,19 @@ export const editTravelStory = async(req,res,next) => {
 
     if(!title || !story || !imageURL || !visitedDate || !visitedLocation){
     return next(errorHandler(400, "All fields are required"));
-
+    }
+     const userId = req.user.id;
         // convert visited date from milliseocnd to date object
         const parsedvisitedDate = new Date(visitedDate);
 
         try {
-            const travelstory = TravelStory.findOne({_id :id, userId :userId});
+            const travelstory = await TravelStory.findOne({_id :id, userId :userId});
 
             if(!travelstory){
                 return next(errorHandler(404, "Travel story not found"));
             }
 
-            const placeHolderImageURL = `http://localhost:3000/assests/placeholderimage.jpg`
+            const placeHolderImageURL = `http://localhost:3000/assets/placeholderimage.jpg`
             travelstory.title = title
             travelstory.story = story
             travelstory.visitedLocation = visitedLocation
@@ -128,4 +129,3 @@ export const editTravelStory = async(req,res,next) => {
             next(error);
         }
 }
-} 
