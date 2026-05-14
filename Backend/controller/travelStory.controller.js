@@ -129,3 +129,38 @@ export const editTravelStory = async(req,res,next) => {
             next(error);
         }
 }
+
+
+export const deleteTravelStory = async(req,res,next) => {
+    const{id} = req.params;
+    const userId = req.user.id;
+
+    try {
+        const travelStory = await TravelStory.findOne({_id : id, userId : userId});
+
+        if(!travelStory){
+            next(errorHandler(404, "Travel story not found"));
+        }
+       // delete  travel strory from the database
+        await travelStory.deleteOne({_id : id , userId : userId});
+        // extract the filename from  the image url
+        const imageURL = travelStory.imageURL;
+        const filename = path.basename(imageURL);
+
+        // delet the file path
+        const filepath = path.join(rootDir , "uploads", filename);
+
+        //check if the file exist
+        if(!fs.existsSync(filepath)){
+            return next(errorHandler(404,"Image not found"));
+        }
+
+        fs.unlinkSync(filepath);
+        res.status(200).json({
+            message : "Travel story deleted successfully"
+        })
+
+    } catch (error) {
+        next(error);
+    }
+}
