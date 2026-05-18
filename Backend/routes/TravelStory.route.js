@@ -1,6 +1,6 @@
 import express from "express";
 import {VerifyToken} from "../utils/verifyUser.js";
-import { addTravelStory, getAllTravelStory, imageupload ,deleteImage, editTravelStory, deleteTravelStory} from "../controller/travelStory.controller.js";
+import { addTravelStory, getAllTravelStory, imageupload ,deleteImage, editTravelStory, deleteTravelStory,updateIsFavorite} from "../controller/travelStory.controller.js";
 import upload from "../multer.js";
 
 const router = express.Router(); 
@@ -15,6 +15,8 @@ router.get("/get-all", VerifyToken, getAllTravelStory);
 router.post("/edit-story/:id", VerifyToken, editTravelStory);
 
 router.post("/delete-story/:id", VerifyToken, deleteTravelStory)
+
+router.put("/is-favorite/:id", VerifyToken, updateIsFavorite);
 
 
 export default router;        
