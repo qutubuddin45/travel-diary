@@ -18,5 +18,6 @@ router.post("/delete-story/:id", VerifyToken, deleteTravelStory)
 
 router.put("/is-favorite/:id", VerifyToken, updateIsFavorite);
 
+router.get("/search", VerifyToken, searchTravelStories );
 
 export default router;        

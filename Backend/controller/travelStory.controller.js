@@ -190,3 +190,19 @@ export const updateIsFavorite = async(req,res,next) => {
        next(error); 
     }
 }
+
+export const searchTravelStories = async(req,res, next) => {
+    const{query} = req.query;
+    const userId = req.user.id;
+    
+    if(!query){
+        return next(errorHandler(400, "Query is required"));
+    }
+
+    try {
+        
+        
+    } catch (error) {
+        next(error);
+    }
+}
