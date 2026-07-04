@@ -197,12 +197,46 @@ export const searchTravelStories = async(req,res, next) => {
     
     if(!query){
         return next(errorHandler(400, "Query is required"));
-    }
+    }  // if the user doesn't provide a quesry  returnn  a error
 
     try {
+        const searchResults = await TravelStory.find({
+            userID : userID,
+            $or: [
+                {title: {$regex: query, $options: "i"}},
+                {story: {$regex: query, $options: "i"}},  // i operation makes the search case insensitive
+                {visitedLocation: {$regex: query, $options: "i"}},
+            ],
+        }).sort({isFavorite: -1})
         
-        
+        res.status(200).json({
+            stories: searchResults,
+        })
     } catch (error) {
         next(error);
-    }
+    } 
+}  
+
+export const filterTravelStories = async(req,res,next) => {
+    const{startDate , endDate} = req.query;
+    const userId = req.user.id;
+   try{
+    const start= new Date(parseInt(startDate));
+    const end = new Date(parseInt(endDate));
+
+    const filteredStories = await TravelStory.find({
+        userId : userId,
+        visitedDate : {$gte : start, $lte : end};
+    }).sort({isFavorite : -1});
+
+    res.status(200).json({
+        stories : filteredStories
+    })
+
+
+
+   }catch(err){
+    next(err);
+   }
+
 }
